@@ -7,11 +7,11 @@ LFLAGS = -Wall $(DEBUG) -std=c++11
 dijkstra: $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o dijkstra
 
-main.o: graph.h priority_queue.h shortest_path.h main.cpp outputs.pdf README.txt
+main.o: graph.h priority_queue.h shortest_path.h main.cpp 
 	$(CC) $(CFLAGS) main.cpp
 
 clean:
 	\rm *.o dijkstra
 
 zip:
-	zip dijkstra.zip graph.h priority_queue.h shortest_path.h main.cpp makefile
+	zip dijkstra.zip graph.h priority_queue.h shortest_path.h main.cpp makefile outputs.pdf README.txt
