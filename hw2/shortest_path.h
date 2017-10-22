@@ -1,4 +1,5 @@
-// File implements a ShortestPath class calculates the path with the shortest
+// This File implements a ShortestPath class that calculates the shortest path
+// from a source node to all other nodes using Dijkstra's algorithm
 // Used Algorithms, 4th Edition by Robert Sedgewick and Kevin Wayne
 // as reference Website: https://algs4.cs.princeton.edu/
 // distance from a source node to all other nodes
@@ -33,7 +34,7 @@ public:
     while (!pq->IsEmpty()) {
       Edge e = pq->MinPriority();
       for (Edge adj : graph->AdjacentNodes(e.to)) {
-        Relax(adj, e);
+        relax(adj, e);
       }
     }
   }
@@ -81,7 +82,7 @@ private:
   PriorityQueue<Edge> *pq;
 
   // helper function that relaxes edge adj and updates the pq
-  void Relax(Edge adj, Edge e) {
+  void relax(Edge adj, Edge e) {
     int v = adj.to;
 
     // if new path found is less than previous path

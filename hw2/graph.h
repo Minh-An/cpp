@@ -36,7 +36,7 @@ bool operator<(const Edge &e1, const Edge &e2) { return e1.dist < e2.dist; }
 
 bool operator==(const Edge &e1, const Edge &e2) {
   return ((e1.to == e2.to && e1.from == e2.from) ||
-          (e1.from == e2.to && e1.to == e2.from));
+	  (e1.from == e2.to && e1.to == e2.from));
 }
 
 bool operator!=(const Edge &e1, const Edge &e2) { return e1.dist != e2.dist; }
@@ -52,32 +52,32 @@ ostream &operator<<(ostream &out, Edge &e) {
 class Graph {
 public:
   // default constructor for Graph
-  Graph(int n) : n(n) {
-    adj = new vector<Edge>[n];
+ Graph(int nodes) : nodes(nodes),edges(0) {
+    
+    adj = new vector<Edge>[nodes];
 
     // for each node, create a vector of edges to store
     // all the edges from the node to another node in the graph
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < nodes; ++i) {
       adj[i] = vector<Edge>();
     }
   }
 
   // constructor that creates a random graph
   // with set density and distance range parameters
-  Graph(int n, double density, double distLow, double distHigh) : n(n) {
-    adj = new vector<Edge>[n];
-    for (int i = 0; i < n; ++i) {
+ Graph(int nodes, double density, double distLow, double distHigh) : nodes(nodes),edges(0) {
+    adj = new vector<Edge>[nodes];
+    for (int i = 0; i < nodes; ++i) {
       adj[i] = vector<Edge>();
     }
 
     srand(time(0));
 
-    for (int i = 0; i < n; i++) {
-      for (int j = i + 1; j < n; j++) {
-        if ((static_cast<double>(rand()) / RAND_MAX) < density) {
-          AddEdge(Edge(i, j, (distHigh - distLow) *
-                                     (static_cast<double>(rand()) / RAND_MAX) +
-                                 distLow));
+    for (int i = 0; i < nodes; i++) {
+      for (int j = i + 1; j < nodes; j++) {
+        if (prob() < density) {
+	  double distance = (distHigh - distLow) * prob() + distLow;
+	  AddEdge(Edge(i, j, distance));
         }
       }
     }
@@ -87,10 +87,10 @@ public:
   ~Graph() { delete[] adj; }
 
   // return number of vertices
-  int V() const { return n; }
+  int V() const { return nodes; }
 
   // return number of edges
-  int E() const { return e; }
+  int E() const { return edges; }
 
   // return edges from node x
   const vector<Edge> &AdjacentNodes(int x) const { return adj[x]; }
@@ -99,17 +99,20 @@ public:
   void AddEdge(Edge e) {
 
     // check if edge already exists
-    if (!this->Adjacent(e.from, e.to)) {
-      vector<Edge> &fromList = adj[e.from];
-      vector<Edge> &toList = adj[e.to];
-
-      fromList.push_back(e);
-      toList.push_back(Edge(e.to, e.from, e.dist));
+    if (!this->adjacent(e.from, e.to)) {
+      adj[e.from].push_back(e);
+      adj[e.to].push_back(Edge(e.to, e.from, e.dist));
     }
+    edges++;
   }
+  
+private:
+  const int nodes;
+  int edges;
+  vector<Edge> *adj;
 
   // does the edge from node x to node y exist?
-  bool Adjacent(int x, int y) {
+  bool adjacent(int x, int y) {
     for (Edge &e : adj[x]) {
       if (e.to == y) {
         return true;
@@ -118,10 +121,13 @@ public:
     return false;
   }
 
-private:
-  const int n;
-  int e;
-  vector<Edge> *adj;
+  // compute a random double from 0 to 1
+  double prob()
+  {
+    return (static_cast<double>(rand()) / RAND_MAX);
+  }
+
+  
 };
 
 // overload operator for output stream (Graph class)

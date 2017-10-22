@@ -7,16 +7,15 @@
 
 using namespace std;
 
-template <class T>
-
 // class representing a minimum priority queue
-class PriorityQueue {
+template <class T> class PriorityQueue {
 public:
   // PriorityQueue constructor
-  PriorityQueue() {
-    queue = vector<T>();
-    size = 0;
-    Edge filler(-1, -1, -1);
+  PriorityQueue() : size(0) {
+
+    // Insert empty object as first element so math for priority queue works
+    // (queue index starts at 1)
+    T filler;
     queue.push_back(filler);
   }
 
@@ -31,12 +30,12 @@ public:
 
       // if element is greater (lower priority), move it down the pq
       if (priority > oldPriority) {
-        Lower(i);
+        heapifyDown(i);
       }
 
       // if element is smaller (higher priority), move it up the pq
       if (priority < oldPriority) {
-        Higher(i);
+        heapifyUp(i);
       }
     }
   }
@@ -44,11 +43,14 @@ public:
   // get and remove the minimum element
   T MinPriority() {
     T min = queue[1];
-    // switch min with max element and move it down the pq
-    Exchange(1, size--);
-    Lower(1);
-    // remove min element
-    queue[size + 1] = Edge();
+
+    // switch min with max element
+    exchange(1, size--);
+    // make sure queue is heap invariant
+    heapifyDown(1);
+
+    queue.pop_back();
+
     return min;
   }
 
@@ -68,13 +70,10 @@ public:
   // insert element into the queue
   void Insert(T element) {
     // add element to the end of the pq
-    if (queue[++size] == T()) {
-      queue[size] = element;
-    } else {
-      queue.push_back(element);
-    }
-    // move the new element up the pq
-    Higher(size);
+    queue.push_back(element);
+    size++;
+    // make sure queue is heap invariant
+    heapifyUp(size);
   }
 
   // returns the minimum element
@@ -93,15 +92,15 @@ private:
   // helper functions for Insert and MinPriority
 
   // moves an element of index i up the pq
-  void Higher(int i) {
+  void heapifyUp(int i) {
     while (i > 1 && (queue[i / 2] > queue[i])) {
-      Exchange(i, i / 2);
+      exchange(i, i / 2);
       i = i / 2;
     }
   }
 
   // moves an element of index i down the pq
-  void Lower(int i) {
+  void heapifyDown(int i) {
     while (2 * i <= size) {
       int j = 2 * i;
 
@@ -113,13 +112,13 @@ private:
         break;
       }
 
-      Exchange(i, j);
+      exchange(i, j);
       i = j;
     }
   }
 
   // exchange positions of two elements
-  void Exchange(int i, int j) {
+  void exchange(int i, int j) {
     T temp = queue[i];
     queue[i] = queue[j];
     queue[j] = temp;

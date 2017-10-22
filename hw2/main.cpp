@@ -2,6 +2,8 @@
 #include "priority_queue.h"
 #include "shortest_path.h"
 
+using namespace std;
+
 // calculates the average shortest path for one node
 // to all other nodes in a graph
 
@@ -23,17 +25,30 @@ double AverageShortestPath(Graph *g, int source) {
   return sum / n;
 }
 
-// test main
+// Monte Carlo simulation to find average of average shortest paths
+// Goes through 1000 trials to get average shortest path from source vertices 0, 10, 20, 30, 40
 int main(void) {
 
-  //random graph of density .20
-  Graph randGraph1(50, .2, 1.0, 10.0);
-
-  //random graph of density .40
-  Graph randGraph2(50, .4, 1.0, 10.0);
-
-  double average1 = AverageShortestPath(&randGraph1, 0);
-  double average2 = AverageShortestPath(&randGraph2, 0);
-  cout << "Average Shortest Path for Node 0 For Graph 1: " << average1 << endl;
-  cout << "Average Shortest Path for Node 0 For Graph 2: " << average2 << endl;
+  for (int i = 0; i < 50; i += 10)
+  {
+    double sum1 = 0;
+    double sum2 = 0;
+    for (int j = 0; j < 1000; j++)
+    {
+      //random graph of density .20
+      Graph randGraph1(50, .2, 1.0, 10.0);
+      
+      //random graph of density .40
+      Graph randGraph2(50, .4, 1.0, 10.0);
+      
+      sum1 += AverageShortestPath(&randGraph1, 0);
+      sum2 += AverageShortestPath(&randGraph2, 0);
+      
+    }
+    
+    cout << "Average shortest path for node " << i << " and Density .20: " << (sum1/1000) << endl;
+    cout << "Average shortest path for node " << i << " and Density .40: " << (sum2/1000) << endl;
+    cout << endl;
+  }
+  
 }
