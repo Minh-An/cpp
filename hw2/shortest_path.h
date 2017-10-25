@@ -68,18 +68,18 @@ public:
   double PathDistance(int v) { return distTo[v]; }
 
 private:
-  Graph *graph;
+  Graph* graph;
 
   // source node
   int source;
 
   // array of distances to each node
-  double *distTo;
+  double* distTo;
 
   // last edge connecting the path to the nodes
-  Edge *edgeTo;
+  Edge* edgeTo;
 
-  PriorityQueue<Edge> *pq;
+  PriorityQueue<Edge>* pq;
 
   // helper function that relaxes edge adj and updates the pq
   void relax(Edge adj, Edge e) {
