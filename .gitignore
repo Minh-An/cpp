@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+/w5/Debug
+/w5/.vs/w5/v15
+/w5/w5/Debug
