@@ -14,7 +14,7 @@ void square(MyIterator first, MyIterator last)
 }
 	
 
-int main()
+int test()
 {
 	cout << "Enter 5 numbers: " << endl;
 	int x;
