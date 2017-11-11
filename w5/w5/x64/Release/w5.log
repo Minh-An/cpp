@@ -1,0 +1,8 @@
+﻿  poker.cpp
+poker.cpp(140): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating code
+  1 of 128 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  w5.vcxproj -> D:\repos\cpp\w5\x64\Release\w5.exe
