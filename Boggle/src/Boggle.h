@@ -27,6 +27,17 @@ public:
 
 private:
     // TODO: add any other member functions/variables necessary
+	int n = 4;
+	char board[n][n];
+	Set<string> computerWords;
+	Set<string> humanWords;
+	Set<string> validWords;
+	
+	unordered_map<int, vector<int>> adj;
+	
+	void dfs();
+	void dfs(int v, string prefix, bool[] marked)
+	void adjacentBlocks();
 };
 
 #endif // _boggle_h
