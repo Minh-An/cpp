@@ -4,17 +4,18 @@
 #include <algorithm>
 
 MonteCarlo::MonteCarlo(const std::vector<Player>& players, int n,
-                       const std::vector<std::vector<int>>& edgelist):players(players), n(n), edgelist(edgelist)
+                       const std::vector<std::vector<int>>& edgelist) : players(players), n(n), edgelist(edgelist)
 {
     std::srand ( unsigned ( std::time(0) ) );
 }
 
-int MonteCarlo::Score(int id)
+int MonteCarlo::Score(int id, int maxWins)
 {
     std::vector<int> emptyHexes;
     std::vector<Player> playersCopy = players;
     playersCopy[id] = Player::RED;
-    for(int i = 0; i < players.size(); i++)
+
+    for(int i = 0; i < n*n; i++)
     {
         if(playersCopy[i] == Player::EMPTY)
         {
@@ -26,6 +27,11 @@ int MonteCarlo::Score(int id)
     int computerWins = 0;
     for(int trial = 0; trial < TRIALS; trial++)
     {
+        if(computerWins + TRIALS - trial < maxWins)
+        {
+            return 0;
+        }
+
         std::random_shuffle(emptyHexes.begin(), emptyHexes.end());
         Player next = Player::BLUE;
         for(int id: emptyHexes)
@@ -38,16 +44,18 @@ int MonteCarlo::Score(int id)
         std::vector<bool> marked(n*n, false);
         for(int i = 0; i < n; i++)
         {
-            if(playersCopy[i] == Player::RED && !endMarked)
+            if(playersCopy[i] == Player::RED)
             {
                 DFS(marked, i, endMarked, playersCopy);
             }
-        }
-        if(endMarked)
-        {
-            computerWins++;
+            if(endMarked)
+            {
+                computerWins++;
+                break;
+            }
         }
     }
+
     return computerWins;
 }
 

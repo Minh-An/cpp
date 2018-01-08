@@ -57,11 +57,11 @@ int HexBoard::ComputerMove()
     MonteCarlo evaluation(players, n, edgelist);
     int bestHex;
     int maxScore = -1;
-    for(int i = 0; i < players.size(); i++)
+    for(int i = 0; i < n*n; i++)
     {
         if(players[i] == Player::EMPTY)
         {
-            int score = evaluation.Score(i);
+            int score = evaluation.Score(i, maxScore);
             if(score > maxScore)
             {
                 bestHex = i;
