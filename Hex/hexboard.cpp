@@ -9,7 +9,8 @@ HexBoard::HexBoard(int n): n(n)
 {
     players.resize(n*n);
     edgelist.resize(n*n);
-    whosTurn = Player::BLUE;
+    WhosTurn = Player::BLUE;
+
     gameOver = false;
 }
 
@@ -18,9 +19,9 @@ void HexBoard::DrawHexBoard()
     const size_t yMargin = 100;
     const size_t xMargin = 25;
     int count = 0;
-    for(size_t i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
-        for(size_t j = 0; j < n; j++)
+        for(int j = 0; j < n; j++)
         {
             //add hex to scene
             Hex* hex = new Hex(count);
@@ -39,7 +40,7 @@ void HexBoard::DrawHexBoard()
     }
 }
 
-bool HexBoard::LegalMove(int id)
+bool HexBoard::IsLegalMove(int id)
 {
     if (id >= 0 && id < n*n)
     {
@@ -53,18 +54,29 @@ bool HexBoard::LegalMove(int id)
 
 int HexBoard::ComputerMove()
 {
-    int randId;
-    do
+    MonteCarlo evaluation(players, n, edgelist);
+    int bestHex;
+    int maxScore = -1;
+    for(int i = 0; i < players.size(); i++)
     {
-        randId = rand() % (n*n);
-    } while (!LegalMove(randId));
-    hexes.at(randId)->Paint(Player::RED);
-    players.at(randId) = Player::RED;
-    whosTurn = Player::BLUE;
-    return randId;
+        if(players[i] == Player::EMPTY)
+        {
+            int score = evaluation.Score(i);
+            if(score > maxScore)
+            {
+                bestHex = i;
+                maxScore = score;
+            }
+        }
+    }
+
+    hexes.at(bestHex)->Paint(Player::RED);
+    players.at(bestHex) = Player::RED;
+    WhosTurn = Player::BLUE;
+    return bestHex;
 }
 
-bool HexBoard::PlayerWins(int id)
+bool HexBoard::HasPlayerWon(int id)
 {
     std::vector<bool> marked(n*n, false);
     bool beginMarked = false;
@@ -73,7 +85,7 @@ bool HexBoard::PlayerWins(int id)
     return beginMarked && endMarked;
 }
 
-bool HexBoard::ComputerWins(int id)
+bool HexBoard::HasComputerWon(int id)
 {
     std::vector<bool> marked(n*n, false);
     bool beginMarked = false;
@@ -82,33 +94,25 @@ bool HexBoard::ComputerWins(int id)
     return beginMarked && endMarked;
 }
 
-Player HexBoard::GetTurn()
-{
-    return whosTurn;
-}
-
-void HexBoard::SetTurn(Player player)
-{
-    whosTurn = player;
-}
-
 void HexBoard::SwitchTurns(int id)
 {
-    if(whosTurn == Player::BLUE && LegalMove(id) && !gameOver)
+    if(WhosTurn == Player::BLUE && IsLegalMove(id) && !gameOver)
     {
+
         hexes.at(id)->Paint(Player::BLUE);
         players.at(id) = Player::BLUE;
-        if(PlayerWins(id))
+
+        if(HasPlayerWon(id))
         {
                game->turnText->setPlainText("YOU WON!!!");
                gameOver = true;
                return;
         }
-        whosTurn = Player::RED;
+        WhosTurn = Player::RED;
         game->UpdateTurn();
         int computerId = ComputerMove();
         game->UpdateTurn();
-        if(ComputerWins(computerId))
+        if(HasComputerWon(computerId))
         {
             game->turnText->setPlainText("YOU LOST :(");
             gameOver = true;

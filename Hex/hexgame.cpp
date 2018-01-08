@@ -44,12 +44,12 @@ void HexGame::DisplayMenu()
 
 void HexGame::UpdateTurn()
 {
-    if(hexBoard->GetTurn() == Player::BLUE)
+    if(hexBoard->WhosTurn == Player::BLUE)
     {
         turnText->setPlainText(QString("YOUR TURN!"));
         turnText->setPos(this->width()/2-turnText->boundingRect().width()/2 , 45);
     }
-    else if(hexBoard->GetTurn() == Player::RED)
+    else if(hexBoard->WhosTurn == Player::RED)
     {
         turnText->setPlainText(QString("COMPUTER'S TURN!"));
         turnText->setPos(this->width()/2-turnText->boundingRect().width()/2 , 45);

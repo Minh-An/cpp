@@ -14,25 +14,21 @@ class HexBoard: public QObject
 public:
     HexBoard(int n);
 
+    Player WhosTurn;
     void DrawHexBoard();
     int ComputerMove();
-    bool PlayerWins(int id);
-    bool ComputerWins(int id);
-    Player GetTurn();
-    void SetTurn(Player player);
-    int GetLastId();
+    bool HasPlayerWon(int id);
+    bool HasComputerWon(int id);
 public slots:
     void SwitchTurns(int id);
 private:
+    friend class MonteCarlo;
+    bool IsLegalMove(int id);
 
-    bool LegalMove(int id);
-
-    MonteCarlo evaluation;
     int n;
     QList<Hex*> hexes;
     std::vector<std::vector<int>> edgelist;
     std::vector<Player> players;
-    Player whosTurn;
     bool gameOver;
 
     std::vector<int> Adjacent(int row, int col);
