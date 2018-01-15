@@ -9,7 +9,7 @@ MonteCarlo::MonteCarlo(const std::vector<Player>& players, int n,
     std::srand ( unsigned ( std::time(0) ) );
 }
 
-int MonteCarlo::Score(int id, int maxWins)
+std::pair<int, int> MonteCarlo::Score(int id)
 {
     std::vector<int> emptyHexes;
     std::vector<Player> playersCopy = players;
@@ -27,11 +27,6 @@ int MonteCarlo::Score(int id, int maxWins)
     int computerWins = 0;
     for(int trial = 0; trial < TRIALS; trial++)
     {
-        if(computerWins + TRIALS - trial < maxWins)
-        {
-            return 0;
-        }
-
         std::random_shuffle(emptyHexes.begin(), emptyHexes.end());
         Player next = Player::BLUE;
         for(int id: emptyHexes)
@@ -56,7 +51,7 @@ int MonteCarlo::Score(int id, int maxWins)
         }
     }
 
-    return computerWins;
+    return std::make_pair(computerWins, id);
 }
 
 void MonteCarlo::DFS(std::vector<bool> &marked, int v, bool &endMarked, const std::vector<Player> &playersCopy)

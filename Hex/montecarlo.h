@@ -2,15 +2,16 @@
 #define MONTECARLO_H
 
 #include <vector>
+#include <utility>
 #include "player.h"
 
-const int TRIALS = 10000;
+const int TRIALS = 5000;
 
 class MonteCarlo
 {
 public:
     MonteCarlo(const std::vector<Player>& players, int n, const std::vector<std::vector<int>>& edgelist);
-    int Score(int id, int maxWins);
+    std::pair<int, int> Score(int id);
 private:
 
     std::vector<std::vector<int>> edgelist;

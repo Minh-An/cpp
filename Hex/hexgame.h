@@ -20,7 +20,7 @@ public:
     HexBoard* hexBoard;
     QGraphicsTextItem* turnText;
 public slots:
-    void StartGame();
+    void StartGame(int n);
 
 };
 #endif // HEXGAME_H

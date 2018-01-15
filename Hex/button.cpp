@@ -1,7 +1,7 @@
 #include "button.h"
 #include <QBrush>
 
-Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent)
+Button::Button(QString name, int n, QGraphicsItem *parent): QGraphicsRectItem(parent), n(n)
 {
     setRect(0,0, 200, 50);
     QBrush brush;
@@ -19,7 +19,7 @@ Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent)
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit clicked();
+    emit clicked(n);
 }
 
 void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

@@ -2,6 +2,8 @@
 #include "hexgame.h"
 
 #include <iostream>
+#include <future>
+#include <utility>
 
 extern HexGame* game;
 
@@ -55,18 +57,27 @@ bool HexBoard::IsLegalMove(int id)
 int HexBoard::ComputerMove()
 {
     MonteCarlo evaluation(players, n, edgelist);
-    int bestHex;
-    int maxScore = -1;
+    std::vector<std::future<std::pair<int, int>>> futures;
     for(int i = 0; i < n*n; i++)
     {
         if(players[i] == Player::EMPTY)
         {
-            int score = evaluation.Score(i, maxScore);
-            if(score > maxScore)
-            {
-                bestHex = i;
-                maxScore = score;
-            }
+            auto future = std::async(std::launch::async, &MonteCarlo::Score, &evaluation, i);
+            futures.push_back(std::move(future));
+            //int score = evaluation.Score(i);
+
+        }
+    }
+
+    int bestHex;
+    int maxScore = -1;
+    for(int i = 0; i < futures.size(); i++)
+    {
+        std::pair<int, int> score = futures[i].get();
+        if(score.first > maxScore)
+        {
+            bestHex = score.second;
+            maxScore = score.first;
         }
     }
 

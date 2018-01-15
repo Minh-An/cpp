@@ -1,6 +1,7 @@
 #include "hexgame.h"
 #include "button.h"
 
+#include <string>
 #include <iostream>
 #include <QGraphicsTextItem>
 
@@ -26,18 +27,41 @@ void HexGame::DisplayMenu()
     titleText->setPos(titleX, 150);
     scene->addItem(titleText);
 
-    //play button
-    Button* playButton = new Button(QString("Play"));
-    int playX = this->width()/2 - playButton->boundingRect().width()/2;
-    playButton->setPos(playX, 275);
-    connect(playButton, SIGNAL(clicked()), this, SLOT(StartGame()));
-    scene->addItem(playButton);
+    //play buttons
+    const int PLAY_OPTIONS = 3;
+    for(int i = 0; i < PLAY_OPTIONS; i++)
+    {
+        Button* playButton;
+
+        int playX;
+        int n;
+        if(i == 0)
+        {
+            n = 7;
+            playX = 100;
+        }
+        if(i == 1)
+        {
+            n = 9;
+            playX = this->width()/2 - playButton->boundingRect().width()/2;
+        }
+        if(i == 2)
+        {
+            n = 11;
+            playX = this->width() - playButton->boundingRect().width() - 100;
+        }
+        std::string s = "Play " + std::to_string(n) + " x " + std::to_string(n);
+        playButton = new Button(QString::fromStdString(s), n);
+        playButton->setPos(playX, 275);
+        connect(playButton, SIGNAL(clicked(int)), this, SLOT(StartGame(int)));
+        scene->addItem(playButton);
+    }
 
     //quit button
     Button* quitButton = new Button(QString("Quit"));
     int quitX = this->width()/2 - quitButton->boundingRect().width()/2;
-    quitButton->setPos(quitX, 325);
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    quitButton->setPos(quitX, 350);
+    connect(quitButton, SIGNAL(clicked(int)), this, SLOT(close()));
     scene->addItem(quitButton);
 
 }
@@ -56,11 +80,11 @@ void HexGame::UpdateTurn()
     }
 }
 
-void HexGame::StartGame()
+void HexGame::StartGame(int n)
 {
     scene->clear();
 
-    hexBoard = new HexBoard(11);
+    hexBoard = new HexBoard(n);
     hexBoard->DrawHexBoard();
 
     QFont textFont("comic sans", 10);
